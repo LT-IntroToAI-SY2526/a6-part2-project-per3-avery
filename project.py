@@ -3,12 +3,12 @@ Multivariable Linear Regression Project
 Assignment 6 Part 3
 
 Group Members:
-- 
+- Avery Liu
 - 
 - 
 - 
 
-Dataset: [Name of your dataset]
+Dataset: Possum Regression
 Predicting: [What you're predicting]
 Features: [List your features]
 """
@@ -21,7 +21,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import numpy as np
 
 # TODO: Update this with your actual filename
-DATA_FILE = 'your_data.csv'
+DATA_FILE = 'possum.csv'
 
 def load_and_explore_data(filename):
     """
@@ -37,10 +37,19 @@ def load_and_explore_data(filename):
     print("=" * 70)
     print("LOADING AND EXPLORING DATA")
     print("=" * 70)
+    print("=== Possum Data ===")
+    data = pd.read_csv(DATA_FILE) #reading the file
+    print(f"\nShape: {data.shape[0]} rows, {data.shape[1]} columns") #I'm not actually using all of the columns.
     
-    # Your code here
+    print(f"\nFirst few rows:")
+    print(data.head())
+
+    print(f"\nBasic statistics:")
+    print(data.describe())
     
-    pass
+    print(f"\nColumn names: {list(data.columns)}")
+    
+    return data
 
 
 def visualize_data(data):
@@ -62,9 +71,52 @@ def visualize_data(data):
     print("=" * 70)
     
     # Your code here
-    # Hint: Use subplots like in Part 2!
+    fig, axes = plt.subplots(3, 2, figsize=(12, 10))
     
-    pass
+    fig.suptitle('Possum Features vs Length', fontsize=16, fontweight='bold')
+
+    axes[0, 0].scatter(data['age'], data['totlngth'], color='red', alpha=0.6)
+    axes[0, 0].set_xlabel('Age (years)')
+    axes[0, 0].set_ylabel('Length (cm)')
+    axes[0, 0].set_title('Age vs Length')
+    axes[0, 0].grid(True, alpha=0.3)
+    
+
+    axes[0, 1].scatter(data['sex'], data['totlngth'], color='orange', alpha=0.6)
+    axes[0, 1].set_xlabel('Sex')
+    axes[0, 1].set_ylabel('Length (cm)')
+    axes[0, 1].set_title('Sex vs Length')
+    axes[0, 1].grid(True, alpha=0.3)
+
+    axes[1, 0].scatter(data['earconch'], data['totlngth'], color='yellow', alpha=0.6)
+    axes[1, 0].set_xlabel('Ear conch length (mm)')
+    axes[1, 0].set_ylabel('Total length (cm)')
+    axes[1, 0].set_title('Ear conch length vs Total length')
+    axes[1, 0].grid(True, alpha=0.3)
+
+    axes[1, 1].scatter(data['hdlngth'], data['totlngth'], color='green', alpha=0.6)
+    axes[1, 1].set_xlabel('Head length (mm)')
+    axes[1, 1].set_ylabel('Total length (cm)')
+    axes[1, 1].set_title('Head length vs Total length')
+    axes[1, 1].grid(True, alpha=0.3)
+
+    axes[2, 0].scatter(data['skullw'], data['totlngth'], color='blue', alpha=0.6)
+    axes[2, 0].set_xlabel('Skull width (mm)')
+    axes[2, 0].set_ylabel('Total length (cm)')
+    axes[2, 0].set_title('Skull width vs Total length')
+    axes[2, 0].grid(True, alpha=0.3)
+
+    axes[2, 1].scatter(data['taill'], data['totlngth'], color='purple', alpha=0.6)
+    axes[2, 1].set_xlabel('Tail length (cm)')
+    axes[2, 1].set_ylabel('Total length (cm)')
+    axes[2, 1].set_title('Tail length vs Total length')
+    axes[2, 1].grid(True, alpha=0.3)
+
+    plt.tight_layout()
+    # TODO: Save the figure as 'feature_plots.png' with dpi=300
+    plt.savefig('feature_plots.png', dpi=300, bbox_inches='tight')
+    # TODO: Show the plot
+    plt.show()
 
 
 def prepare_and_split_data(data):
