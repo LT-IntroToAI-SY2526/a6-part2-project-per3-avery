@@ -141,8 +141,27 @@ def prepare_and_split_data(data):
     print("=" * 70)
     
     # Your code here
+    feature_columns = ['age','sex','earconch','hdlngth','skullw','taill']
     
-    pass
+    X = data[feature_columns]
+    y = data['totlngth']
+    
+    print(f"\n==== Feature Preparation ====")
+    print(f"Features (X) shape: {X.shape}")
+    print(f"Target (y) shape: {y.shape}")
+
+    print(f"\nFeature columns: {list(X.columns)}")
+
+    #now splitting
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    print(f"\n=== Data Split (Matching Unplugged Activity) ===")
+    print(f"Training set: {len(X_train)} samples")
+    print(f"Training set: {len(X_test)} samples")
+
+    return X_train, X_test, y_train, y_test
+
+
 
 
 def train_model(X_train, y_train):
@@ -167,8 +186,13 @@ def train_model(X_train, y_train):
     print("=" * 70)
     
     # Your code here
-    
-    pass
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+    print(model.intercept_)
+    print(zip(feature_names, model.coef_))
+    print("y = "+str(model.coef_)+"x + "+str(model.intercept_))
+
+    return model
 
 
 def evaluate_model(model, X_test, y_test):
@@ -195,8 +219,28 @@ def evaluate_model(model, X_test, y_test):
     print("=" * 70)
     
     # Your code here
+    predictions = model.predict(X_test)
+    r2 = r2_score(y_test, predictions)
+    mse = mean_squared_error(y_test, predictions)
+    rmse = np.sqrt(mse)
+    print(f"\n=== Model Performance ===")
+    print(f"R² Score: {r2:.4f}")
+    print(f"  → Model explains {r2*100:.2f}% of price variation")
+    print(f"\nRoot Mean Squared Error: ${rmse:.2f}")
+    print(f"  → On average, predictions are off by ${rmse:.2f}")
+
+
+
+    print(f"\n=== Feature Importance ===")
     
-    pass
+    #admittedly i don't understand these 2 lines
+    feature_importance = list(zip(feature_names, np.abs(model.coef_)))
+    feature_importance.sort(key=lambda x: x[1], reverse=True)
+
+    for i, (name, importance) in enumerate(feature_importance, 1):
+        print(f"{i}. {name}: {importance:.2f}")
+
+    return predictions
 
 
 def make_prediction(model):
