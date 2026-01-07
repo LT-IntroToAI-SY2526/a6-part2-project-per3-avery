@@ -159,12 +159,12 @@ def prepare_and_split_data(data):
     print(f"Training set: {len(X_train)} samples")
     print(f"Training set: {len(X_test)} samples")
 
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, feature_columns
 
 
 
 
-def train_model(X_train, y_train):
+def train_model(X_train, y_train, feature_names):
     """
     Train the linear regression model
     
@@ -243,7 +243,7 @@ def evaluate_model(model, X_test, y_test):
     return predictions
 
 
-def make_prediction(model):
+def make_prediction(model, feature_names):
     """
     Make a prediction for a new example
     
@@ -264,22 +264,31 @@ def make_prediction(model):
     # Example: If predicting house price with [sqft, bedrooms, bathrooms]
     # sample = pd.DataFrame([[2000, 3, 2]], columns=feature_names)
     
-    pass
+    sample = pd.DataFrame([[age, sex, earconch, hdlngth, skullw, taill]], columns=feature_names)
+#['age','sex','earconch','hdlngth','skullw','taill']
+    predicted_length = model.predict(sample)[0] 
 
+    sex_name = ['male', 'female'][sex]
+
+    print(f"\n=== New Prediction ===")
+    print(f"Possum traits: {earconch:.0f} mm ear conch, {hdlngth} mm long head, {skullw} mm wide skull, {taill} cm long tail, {age} years old, {sex}")
+    print(f"Predicted total length: ${predicted_length:,.2f}")
+    
+    return predicted_length
 
 if __name__ == "__main__":
     # Step 1: Load and explore
     data = load_and_explore_data(DATA_FILE)
     
-    # Step 2: Visualize
+    # Step 2: Visualizex
     visualize_data(data)
     
     # Step 3: Prepare and split
-    X_train, X_test, y_train, y_test = prepare_and_split_data(data)
+    X_train, X_test, y_train, y_test, feature_columns = prepare_and_split_data(data)
     
     # Step 4: Train
-    model = train_model(X_train, y_train)
-    
+    model = train_model(X_train, y_train, feature_columns) #X.columns
+
     # Step 5: Evaluate
     predictions = evaluate_model(model, X_test, y_test)
     
@@ -289,6 +298,14 @@ if __name__ == "__main__":
     print("\n" + "=" * 70)
     print("PROJECT COMPLETE!")
     print("=" * 70)
+
+
+
+
+
+
+
+
     print("\nNext steps:")
     print("1. Analyze your results")
     print("2. Try improving your model (add/remove features)")
